@@ -1,0 +1,64 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import GameCard from './GameCard.astro';
+
+interface Props {
+  id: string;
+  nombre: string;
+  games: CollectionEntry<'games'>[];
+  open?: boolean;
+}
+
+const { id, nombre, games, open = true } = Astro.props;
+const semestres = [...new Set(games.map((g) => g.data.semester))].sort().reverse();
+---
+
+<details id={`sede-${id}`} class="group scroll-mt-20 border-b-2 border-np-ink" open={open}>
+  <summary
+    class="cursor-pointer list-none bg-np-yellow px-5 py-6 transition-colors hover:bg-np-pink sm:px-8 [&::-webkit-details-marker]:hidden"
+  >
+    <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <span
+          class="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-np-ink bg-np-white font-mono text-lg font-bold transition-transform group-open:rotate-90"
+          aria-hidden="true"
+        >▶</span>
+        <div>
+          <p class="font-mono text-xs font-bold uppercase tracking-widest text-np-ink/60">[ Sede ]</p>
+          <h2 class="font-display text-2xl font-bold leading-tight tracking-tight sm:text-4xl">{nombre}</h2>
+        </div>
+      </div>
+      <span class="np-chip shrink-0 bg-np-white">
+        {games.length} {games.length === 1 ? 'juego' : 'juegos'}
+      </span>
+    </div>
+  </summary>
+
+  <div class="border-t-2 border-np-ink">
+    {semestres.map((semestre, i) => {
+      const gamesInSemester = games.filter((g) => g.data.semester === semestre);
+      return (
+        <section class:list={['px-5 py-14 sm:px-8 sm:py-16', i > 0 && 'border-t-2 border-dashed border-np-ink/30']}>
+          <div class="mx-auto w-full max-w-6xl">
+            <p class="font-mono text-sm font-bold uppercase tracking-widest text-np-gray">
+              [ {String(i + 1).padStart(2, '0')} ]
+            </p>
+            <h3 class="mt-2 font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+              Semestre {semestre}
+            </h3>
+            <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {gamesInSemester.map((game) => (
+                <GameCard
+                  id={game.id}
+                  title={game.data.title}
+                  authors={game.data.authors}
+                  description={game.data.description}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    })}
+  </div>
+</details>

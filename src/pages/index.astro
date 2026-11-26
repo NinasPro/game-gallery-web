@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SedeSection from '../components/SedeSection.astro';
+
+const allGames = await getCollection('games');
+const sedes = (await getCollection('sedes')).sort(
+  (a, b) => a.data.orden - b.data.orden || a.data.nombre.localeCompare(b.data.nombre),
+);
+// Solo se muestran las sedes que tienen al menos un juego
+const sedesConJuegos = sedes
+  .map((sede) => ({ sede, games: allGames.filter((g) => g.data.sede.id === sede.id) }))
+  .filter(({ games }) => games.length > 0);
+---
+
+<Layout title="Galería de Juegos - Niñas Pro">
+  <main>
+    <!-- Hero -->
+    <section class="relative overflow-hidden border-b-2 border-np-ink bg-np-primary text-np-ink">
+      <div class="np-grid-bg pointer-events-none absolute inset-0 opacity-10" aria-hidden="true"></div>
+      <div class="relative mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
+        <div class="mb-5 flex flex-wrap gap-2">
+          <span class="np-chip bg-np-ink text-np-white">Galería</span>
+          <span class="np-chip bg-np-yellow">Python + PyGame</span>
+          <span class="np-chip bg-np-pink">{allGames.length} {allGames.length === 1 ? 'juego' : 'juegos'}</span>
+        </div>
+        <p class="mb-3 font-mono text-sm font-bold uppercase tracking-widest text-np-ink/60">[ Programa Niñas Pro ]</p>
+        <h1 class="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+          Galería de Juegos <span class="inline-block -skew-x-3 bg-np-ink px-2 text-np-white">Niñas Pro</span>
+        </h1>
+        <p class="mt-5 max-w-xl text-base leading-relaxed text-np-ink/80 sm:text-lg">
+          Videojuegos creados por nuestras estudiantes en Python y Pygame. ¡Elige uno y juega directo en tu navegador!
+        </p>
+        <nav class="mt-8 flex flex-wrap items-center gap-3" aria-label="Sedes">
+          <span class="font-mono text-xs font-bold uppercase tracking-widest text-np-ink/60">Ir a sede:</span>
+          {sedesConJuegos.map(({ sede }) => (
+            <a href={`#sede-${sede.id}`} class="np-btn bg-np-white !px-4 !py-2 hover:bg-np-yellow">
+              {sede.data.nombre}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </section>
+
+    <!-- Sedes (cada una se puede abrir y cerrar) -->
+    {sedesConJuegos.map(({ sede, games }) => (
+      <SedeSection id={sede.id} nombre={sede.data.nombre} games={games} />
+    ))}
+  </main>
+</Layout>

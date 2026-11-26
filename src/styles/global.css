@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-np-primary: #6fd0d8;
+  --color-np-cyan: #6fd0d8;
+  --color-np-pink: #fbd1e9;
+  --color-np-blue: #2b88f7;
+  --color-np-ink: #171929;
+  --color-np-white: #fff;
+  --color-np-green: #05a175;
+  --color-np-yellow: #fdca36;
+  --color-np-gray: #666;
+  --color-np-red: #fc3535;
+  --color-np-cream: #f1f1ea;
+
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+
+@utility shadow-hard-sm {
+  box-shadow: 4px 4px 0 0 var(--color-np-ink);
+}
+@utility shadow-hard {
+  box-shadow: 6px 6px 0 0 var(--color-np-ink);
+}
+@utility shadow-hard-lg {
+  box-shadow: 10px 10px 0 0 var(--color-np-ink);
+}
+
+@layer base {
+  body {
+    font-family: var(--font-display);
+    color: var(--color-np-ink);
+    background-color: var(--color-np-cream);
+  }
+}
+
+@layer components {
+  /* Botón base estilo Niñas Pro */
+  .np-btn {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-np-ink px-6 py-3 font-mono text-sm font-bold uppercase tracking-wider shadow-hard-sm transition-all hover:-translate-y-0.5 hover:shadow-hard active:translate-y-0.5 active:shadow-none;
+  }
+  /* Chip / etiqueta */
+  .np-chip {
+    @apply inline-block border-2 border-np-ink px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider;
+  }
+  /* Barra de título tipo ventana de editor */
+  .np-titlebar {
+    @apply flex items-center justify-between border-b-2 border-np-ink bg-np-ink px-3 py-1.5 font-mono text-xs font-bold text-np-white;
+  }
+  .np-winbtn {
+    @apply flex h-4 w-4 items-center justify-center border border-current leading-none;
+  }
+  /* Cuadrícula de fondo */
+  .np-grid-bg {
+    background-image:
+      linear-gradient(#171929 1px, transparent 1px),
+      linear-gradient(90deg, #171929 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}

@@ -1,0 +1,33 @@
+---
+import { withBase } from '../lib/url';
+interface Props {
+  id: string;
+  title: string;
+  authors: string;
+  description: string;
+}
+
+const { id, title, authors, description } = Astro.props;
+const fileName = `${id.replace(/-/g, '_')}.py`;
+---
+
+<article class="flex h-full flex-col border-2 border-np-ink bg-np-white shadow-hard-sm transition-transform hover:-translate-y-1">
+  <div class="np-titlebar">
+    <span class="truncate">{fileName}</span>
+    <span class="ml-3 flex shrink-0 gap-1" aria-hidden="true">
+      <span class="np-winbtn">_</span><span class="np-winbtn">□</span><span class="np-winbtn">✕</span>
+    </span>
+  </div>
+
+  <div class="flex flex-1 flex-col justify-between p-6">
+    <div>
+      <h4 class="font-display text-xl font-bold leading-tight">{title}</h4>
+      <p class="mt-2 font-mono text-xs uppercase tracking-wider text-np-gray">Por: {authors}</p>
+      <p class="mt-3 text-sm leading-relaxed text-np-gray line-clamp-3">{description}</p>
+    </div>
+
+    <a href={withBase(`/jugar/${id}`)} class="np-btn mt-6 w-full bg-np-ink text-np-white hover:bg-np-primary hover:text-np-ink">
+      ¡Jugar ahora! →
+    </a>
+  </div>
+</article>

@@ -1,0 +1,40 @@
+# Publica el sitio en GitHub Pages cada vez que se sube un cambio a la rama main.
+# Basado en https://docs.astro.build/en/guides/deploy/github/
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Permite publicar a mano desde la pestaña "Actions" de GitHub
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v7
+      - name: Instalar, compilar y subir el sitio
+        uses: withastro/action@v6
+        env:
+          # El sitio vive en https://<organizacion>.github.io/<repositorio>/
+          # Se calcula solo, así que funciona aunque cambie el nombre del repositorio.
+          # Si algún día se usa un dominio propio, hay que borrar BASE_PATH (ver README).
+          SITE_URL: https://${{ github.repository_owner }}.github.io
+          BASE_PATH: /${{ github.event.repository.name }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

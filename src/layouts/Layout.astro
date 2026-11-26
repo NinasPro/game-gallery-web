@@ -1,0 +1,54 @@
+---
+import { withBase } from '../lib/url';
+import '../styles/global.css'; // <-- SE IMPORTA AQUÍ UNA SOLA VEZ
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#6FD0D8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen font-display antialiased">
+    <header class="sticky top-0 z-50 border-b-2 border-np-ink bg-np-cream/95 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
+        <a href={withBase('/')} class="flex items-center gap-3" aria-label="Inicio, Niñas Pro">
+          <span class="font-display text-xl font-bold leading-[0.85] tracking-tight text-np-ink">
+            <span class="block">Niñas</span><span class="block">PRO</span>
+          </span>
+          <span class="hidden border-l-2 border-np-ink pl-3 font-mono text-xs uppercase leading-tight text-np-gray sm:block">
+            Galería<br />de Juegos
+          </span>
+        </a>
+        <a href={withBase('/')} class="np-btn bg-np-primary text-np-ink hover:bg-np-ink hover:text-np-white !px-4 !py-2">
+          Catálogo
+        </a>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="border-t-2 border-np-ink bg-np-ink px-5 py-8 text-np-white sm:px-8">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
+        <span class="font-display text-lg font-bold">NiñasPRO</span>
+        <span class="font-mono text-xs uppercase tracking-wider text-np-white/70">
+          &gt; import pygame <span class="animate-pulse">▋</span>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>

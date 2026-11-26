@@ -1,0 +1,11 @@
+// Configuración de Cloudflare Workers para publicar el sitio.
+// El sitio es estático: Cloudflare solo sirve los archivos que `npm run build` deja en ./dist
+// "name" debe ser igual al nombre del proyecto en el panel de Cloudflare.
+// Por ahora el sitio se publica con GitHub Pages; este archivo queda listo por si se pasa a Cloudflare.
+{
+  "name": "game-gallery-web",
+  "compatibility_date": "2026-11-25",
+  "assets": {
+    "directory": "./dist"
+  }
+}

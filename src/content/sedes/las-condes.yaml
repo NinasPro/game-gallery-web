@@ -1,0 +1,4 @@
+# Una sede por archivo. El nombre del archivo (sin .yaml) es el que se usa
+# en el campo `sede:` de cada juego. Ej: sede: "las-condes"
+nombre: "Las Condes"
+orden: 1 # las sedes se muestran de menor a mayor
