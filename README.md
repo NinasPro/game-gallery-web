@@ -180,7 +180,9 @@ Cambia una sola línea:
 + tar = tarfile.open(fileobj=archive, mode="r:*")
 ```
 
-**Sin este cambio, el juego se queda pegado en "Loading".** Más abajo se explica por qué hace falta. El resto de la plantilla generada se deja tal cual.
+**Sin este cambio, el juego se queda pegado en "Loading".** Algunos servidores entregan el `.tar.gz` ya descomprimido, y `"r:gz"` falla. En cambio, `"r:*"` detecta solo si viene comprimido o no. El resto de la plantilla generada se deja tal cual.
+
+Ojo: esa parte del `<script>` es **código Python**. Si quieres comentar una línea ahí, usa `#` y no `//`. Con `//` el script falla y el juego no carga.
 
 ### 5. Crear la ficha del juego
 
@@ -225,30 +227,3 @@ Estos detalles no impiden publicar el juego, pero se notan en el navegador. No l
 - **Símbolos especiales en los textos** (◄ ► ★, emojis). Pueden verse como cuadraditos, porque la fuente del navegador no los tiene.
 - **Ventanas grandes** (más de ~800 px). No caben completas en pantallas chicas.
 - **Imágenes muy pesadas.** Las fotos de varios MB (por ejemplo, `.jpg` de 2 MB que se muestran a 680×420) hacen que el juego tarde en cargar. Se pueden achicar sin cambiar el nombre del archivo ni el código, por ejemplo a 2 veces el tamaño de la ventana: `sips -z <alto> <ancho> -s formatOptions 85 imagen.jpg` (en Mac). Guarda antes las originales fuera de la carpeta del juego. Se hizo así con Dear Witch.
-
-## Problema resuelto: el juego se quedaba en "Loading, please wait..."
-
-### Síntoma
-
-El juego funcionaba en el servidor de pruebas de pygbag (`localhost:8000`). Dentro de Astro (`/jugar/dia-lluvioso`), en cambio, se quedaba en una pantalla gris con el cartel verde **"Loading, please wait..."** y no respondía a los clics.
-
-### Causa
-
-El servidor de desarrollo de Astro (Vite) entrega los archivos `.tar.gz` con el header `Content-Encoding: gzip`. Por eso el navegador descomprime el archivo antes de pasárselo a Python. Luego `tarfile.open(..., mode="r:gz")` intenta descomprimir un `.tar` que ya no está comprimido y falla. `custom_site()` se cae sin mostrar error y el cartel nunca se oculta.
-
-La pista estaba en la consola: `End.cross_file.fetch ... r/w= 532480`. Esa cifra es el tamaño del tar **descomprimido**, mientras que el `.tar.gz` pesa 496 368 bytes. El servidor de pygbag no envía ese header, y por eso allá sí funcionaba.
-
-### Solución
-
-Usar `mode="r:*"`, como se indica en el paso 4. Así `tarfile` detecta solo si el archivo viene comprimido, y funciona con Vite, con pygbag y con cualquier hosting.
-
-### Cosas que no eran la causa (se pueden ignorar)
-
-- `PyMain: BrowserFS not found` y el 404 de `browserfs.min.js`: también aparecen cuando el juego funciona bien.
-- El log `window[DEBUG] ... 240, 240` y el recuadro celeste pequeño: son cálculos de tamaño internos de `pythons.js`.
-- `** MEDIA USER ACTION REQUIRED **`: con `ume_block: 1`, que es el valor por defecto, el juego espera un clic para activar el audio. La página `/jugar/[id]` ya le pide a la jugadora que haga clic dentro del juego.
-
-### Errores a evitar al editar `index.html`
-
-- La primera parte del `<script>` es **código Python**. Para comentar líneas ahí se usa `#`, no `//`: con `//` el script entero falla por error de sintaxis.
-- No hace falta cambiar `ume_block`, `autorun`, `fb_width` ni `fb_height`. El canvas se escala solo al tamaño del `<iframe>`.
